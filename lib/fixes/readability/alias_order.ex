@@ -59,16 +59,16 @@ defmodule CredoFixes.Fixes.Readability.AliasOrder do
   defp chunk_to_fix([], _), do: nil
 
   defp chunk_to_fix([last | _] = chunk, chunk_start) do
+    chunk = Enum.reverse(chunk)
     chunk_end = Sourceror.get_range(last).end
 
-    %{
-      range: %{start: chunk_start, end: chunk_end},
-      change: chunk_to_string(chunk)
-    }
-  end
+    sorted_chunk = chunk |> Enum.sort_by(&Macro.to_string/1)
 
-  defp chunk_to_string(chunk) do
-    {:__block__, [], chunk |> Enum.sort_by(&Macro.to_string/1)}
-    |> Sourceror.to_string()
+    if chunk != sorted_chunk do
+      %{
+        range: %{start: chunk_start, end: chunk_end},
+        change: Sourceror.to_string({:__block__, [], sorted_chunk})
+      }
+    end
   end
 end

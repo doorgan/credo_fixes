@@ -72,6 +72,19 @@ defmodule CredoFixesTest.Fixes.Readability.AliasOrder do
         alias J.{F, B}
       end
       """
+    },
+    %{
+      name: "doesn't change already ordered aliases",
+      original: ~S"""
+      defmodule Test do
+        alias A; alias B; alias C
+      end
+      """,
+      expected: ~S"""
+      defmodule Test do
+        alias A; alias B; alias C
+      end
+      """
     }
   ]
 
